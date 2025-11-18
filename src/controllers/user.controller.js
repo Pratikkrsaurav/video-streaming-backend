@@ -297,6 +297,29 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
    ).select("-password")
 })
 
+const updateUserCoverImage = asyncHandler(async(req,res) => {
+   const coverImageLocalPath = req.file?.path
+
+   if(!coverImageLocalPath) {
+      throw new apiError (400, "Cover Image file is required")
+   }
+
+   const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+   if(!coverImage.url) {
+      throw new apiError (500, "Something went wrong while uploading cover image")
+   }
+
+   User.findByIdAndUpdate(
+      req.user?._id,
+      {
+         $set: {
+            coverImage: coverImage.url
+         }
+      },
+      {new: true}
+   ).select("-password")
+})
+
 export { registerUser,
          loginUser, 
          logoutUser,
@@ -304,5 +327,6 @@ export { registerUser,
          changeCurrentPassword,
          getCurrentUser,
          updateAccountDetails,
-         updateUserAvatar
+         updateUserAvatar,
+         updateUserCoverImage
  };
