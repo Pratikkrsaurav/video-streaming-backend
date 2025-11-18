@@ -309,7 +309,7 @@ const updateUserCoverImage = asyncHandler(async(req,res) => {
       throw new apiError (500, "Something went wrong while uploading cover image")
    }
 
-   User.findByIdAndUpdate(
+   const user = User.findByIdAndUpdate(
       req.user?._id,
       {
          $set: {
